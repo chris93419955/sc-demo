@@ -1,0 +1,29 @@
+server:
+  port: 11001
+
+spring:
+  application:
+    name: sc-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: hello_route
+          uri: lb://EUREKA-CONSUMER
+          order: 0
+          predicates:
+            - Path=/consumer/**
+          filters:
+            - StripPrefix=1
+            - AddResponseHeader=X-Response-Default-Foo, Default-Bar
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://peer1:7001/eureka/
+
+logging:
+  level:
+    org.springframework.cloud.gateway: debug
